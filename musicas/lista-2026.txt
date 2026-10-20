@@ -1,0 +1,8 @@
+# Lista de desejos de 2026. Preencha com as músicas que você quer ter.
+# Formato: genero | artista - música
+# Gêneros: funk, bandinha-gaucha, sertanejo, forro, outros
+# Esta lista NÃO baixa nada. Ela só serve para organizar o que comprar,
+# baixar offline no app de streaming ou procurar nas fontes de FONTES-LEGAIS.md.
+# Exemplo:
+# forro | Artista - Nome da música
+

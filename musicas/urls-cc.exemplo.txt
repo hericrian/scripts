@@ -1,0 +1,4 @@
+# Copie para urls-cc.txt e preencha. Uma entrada por linha: genero|URL  ou  genero|texto de busca
+# Só entram vídeos que o autor marcou como Creative Commons; o resto é recusado e registrado.
+# forro|https://www.youtube.com/watch?v=XXXXXXXXXXX
+# sertanejo|sertanejo instrumental creative commons
