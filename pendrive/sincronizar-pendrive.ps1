@@ -15,6 +15,7 @@
 .PARAMETER Unidade  Letra do pendrive (ex.: E). Padrao: detectado automaticamente.
 .PARAMETER Destino  Pasta de destino qualquer (so para teste; ignora a deteccao do pendrive).
 .PARAMETER SemTags  Nao le a tag de genero (mais rapido; usa so o caminho/nome).
+.PARAMETER LimparPendrive  APAGA tudo que esta no pendrive antes de copiar (so em unidade removivel detectada; pede para digitar a letra da unidade). Sem -Aplicar so mostra o que seria apagado.
 .PARAMETER Aplicar  Copia de verdade e grava o playlist.m3u.
 
 .EXAMPLE
@@ -27,6 +28,7 @@ param(
     [string]$Unidade,
     [string]$Destino,
     [switch]$SemTags,
+    [switch]$LimparPendrive,
     [switch]$Aplicar
 )
 
@@ -102,6 +104,19 @@ if ($Destino) {
 
 if ($simulacao) { Write-Host '=== SIMULACAO: nada sera copiado. Use -Aplicar para copiar. ===' -ForegroundColor Yellow }
 
+# ---------- limpeza opcional do pendrive ----------
+if ($LimparPendrive) {
+    if ($Destino) { Write-Error '-LimparPendrive so vale para pendrive detectado, nao para -Destino.'; return }
+    $itensApagar = @(Get-ChildItem -LiteralPath $raiz -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne 'System Volume Information' -and $_.Name -ne '$RECYCLE.BIN' })
+    $tam = (Get-ChildItem -LiteralPath $raiz -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum
+    Write-Host ("LIMPAR: {0} itens na raiz de {1} ({2} MB) seriam APAGADOS." -f $itensApagar.Count, $d.DeviceID, [math]::Round(([double]$tam) / 1MB, 1)) -ForegroundColor Red
+    if ($Aplicar) {
+        $resp = Read-Host "Digite a letra da unidade ($($d.DeviceID.TrimEnd(':'))) para confirmar que quer apagar TUDO do pendrive"
+        if ($resp.TrimEnd(':').ToUpperInvariant() -ne $d.DeviceID.TrimEnd(':').ToUpperInvariant()) { Write-Host 'Confirmacao nao confere. Nada foi apagado.'; return }
+        $itensApagar | Remove-Item -Recurse -Force
+        Write-Host 'Pendrive limpo.'
+    }
+}
 # ---------- indice do que ja existe no pendrive (nome|tamanho) ----------
 $existentes = @{}
 if (Test-Path -LiteralPath $raiz) {
