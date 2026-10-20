@@ -1,0 +1,1 @@
+-novid -high +exec autoexec -nojoy
